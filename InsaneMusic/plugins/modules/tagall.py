@@ -177,7 +177,6 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 # Assuming you have defined the bot and dispatcher objects for the Telegram bot
-bot = Bot(token="BOT_TOKEN")
 dp = Dispatcher(bot)
 
 spam_chats = []
