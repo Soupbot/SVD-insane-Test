@@ -170,8 +170,6 @@ async def cancel_spam(client, message):
 
 # Assuming you have defined the client object and necessary setup for the Telegram bot
 
-spam_chats = []
-
 TAGMES = ["hi", "hello", "good morning", "good evening", "good night", "yellarum yenna pandringa","vetiya iruntha vc ku vanga work la irrunthalum vanga😉"]
 EMOJI = ["😊", "👋", "🌞", "🌙","❤️", "💚", "💙", "💜", "🖤"]
 
@@ -220,7 +218,7 @@ async def tagme_handler(msg, mode):
     except:
         pass
 
-@client.on_callback_query()
+@bot.on_callback_query()
 async def on_callback_query(event):
     if event.data == "blast":
         morning_quote = "Good morning! Here's a beautiful quote to start your day:\n\n" \
