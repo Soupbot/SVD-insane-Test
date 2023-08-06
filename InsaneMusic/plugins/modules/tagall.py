@@ -4,6 +4,7 @@ import random
 from pyrogram import Client, filters
 from pyrogram.errors import UserNotParticipant
 from pyrogram.types import ChatPermissions
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 spam_chats = []
 
@@ -166,3 +167,63 @@ async def cancel_spam(client, message):
         except:
             pass
         return await message.reply("**yevan da niruthunathu irrunga da varen**")
+
+# Assuming you have defined the client object and necessary setup for the Telegram bot
+
+spam_chats = []
+
+TAGMES = ["hi", "hello", "good morning", "good evening", "good night", "yellarum yenna pandringa","vetiya iruntha vc ku vanga work la irrunthalum vanga😉"]
+EMOJI = ["😊", "👋", "🌞", "🌙","❤️", "💚", "💙", "💜", "🖤"]
+
+async def tagme_handler(msg, mode):
+    chat_id = msg.chat.id
+    if chat_id in spam_chats:
+        await msg.reply("The tagme command is already running in this chat.")
+        return
+
+    spam_chats.append(chat_id)
+    usrnum = 0
+    usrtxt = ""
+
+    async for usr in client.iter_chat_members(chat_id):
+        if not chat_id in spam_chats:
+            break
+
+        if usr.user.is_bot:
+            continue
+
+        usrnum += 1
+        usrtxt += f"[{usr.user.first_name}](tg://user?id={usr.user.id}) "
+
+        if usrnum == 1:
+            if mode == "text_on_cmd":
+                txt = f"{usrtxt} {random.choice(TAGMES)}"
+                markup = InlineKeyboardMarkup()
+                blast_button = InlineKeyboardButton("Blast!", callback_data="blast")
+                markup.insert(blast_button)
+                await client.send_message(chat_id, txt, reply_markup=markup)
+            elif mode == "text_on_reply":
+                markup = InlineKeyboardMarkup()
+                blast_button = InlineKeyboardButton("Blast!", callback_data="blast")
+                markup.insert(blast_button)
+                await msg.reply(f"{random.choice(EMOJI)} {usrtxt}", reply_markup=markup)
+
+            # Generate a random sleep time between 10 and 30 seconds
+            sleep_time = random.randint(10, 30)
+            await asyncio.sleep(sleep_time)
+
+            usrnum = 0
+            usrtxt = ""
+
+    try:
+        spam_chats.remove(chat_id)
+    except:
+        pass
+
+@client.on_callback_query()
+async def on_callback_query(event):
+    if event.data == "blast":
+        morning_quote = "Good morning! Here's a beautiful quote to start your day:\n\n" \
+                        "Life is what happens when you're busy making other plans. - John Lennon"
+        await event.answer()
+        await event.message.edit_text(morning_quote)
