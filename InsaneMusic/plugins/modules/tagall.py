@@ -1,6 +1,8 @@
 from InsaneMusic import app 
 import asyncio
 import random
+import requests
+from bs4 import BeautifulSoup
 from aiogram import Bot, Dispatcher, types
 from pyrogram import Client, filters
 from pyrogram.errors import UserNotParticipant
@@ -171,13 +173,6 @@ async def cancel_spam(client, message):
 
 # Assuming you have defined the client object and necessary setup for the Telegram bot
 
-import random
-import asyncio
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-
-# Assuming you have defined the bot and dispatcher objects for the Telegram bot
-
 bot = Bot(token="6348947600:AAG17P5yhPUhU89E_4o-mZRoaD7F8_XFkbk")
 dp = Dispatcher(bot)
 
@@ -185,6 +180,20 @@ spam_chats = []
 
 TAGMES = ["hi", "hello", "good morning", "good evening", "good night"]
 EMOJI = ["😊", "👋", "🌞", "🌙"]
+
+def get_random_quote():
+    url = "https://quotes.toscrape.com/random"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    quote = soup.find("span", class_="text").text.strip()
+    author = soup.find("span", class_="author").text.strip()
+    return f"{quote}\n- {author}"
+
+def get_random_joke():
+    url = "https://official-joke-api.appspot.com/random_joke"
+    response = requests.get(url)
+    data = response.json()
+    return f"{data['setup']}\n{data['punchline']}"
 
 @dp.message_handler(commands=['tagme'])
 async def tagme_handler(msg: types.Message):
@@ -208,11 +217,10 @@ async def tagme_handler(msg: types.Message):
         usrtxt += f"[{usr.user.first_name}](tg://user?id={usr.user.id}) "
 
         if usrnum == 1:
-            txt = f"{usrtxt} {random.choice(TAGMES)}"
             markup = InlineKeyboardMarkup()
-            blast_button = InlineKeyboardButton("Blast!", callback_data="blast")
-            markup.insert(blast_button)
-            await msg.reply(txt, reply_markup=markup)
+            open_me_button = InlineKeyboardButton("Open Me", callback_data="open_me")
+            markup.insert(open_me_button)
+            await msg.reply(f"{usrtxt} {random.choice(TAGMES)}", reply_markup=markup)
 
             # Generate a random sleep time between 10 and 30 seconds
             sleep_time = random.randint(10, 30)
@@ -226,13 +234,18 @@ async def tagme_handler(msg: types.Message):
     except:
         pass
 
-@dp.callback_query_handler(lambda c: c.data == 'blast')
-async def on_blast_button_click(callback_query: types.CallbackQuery):
+@dp.callback_query_handler(lambda c: c.data == 'open_me')
+async def on_open_me_button_click(callback_query: types.CallbackQuery):
     chat_id = callback_query.message.chat.id
-    morning_quote = "Good morning! Here's a beautiful quote to start your day:\n\n" \
-                    "Life is what happens when you're busy making other plans. - John Lennon"
+    time_of_day = "evening" if "good evening" in callback_query.message.text.lower() else "morning"
+    if time_of_day == "morning":
+        quote = get_random_quote()
+        await bot.send_message(chat_id, f"Good morning! Here's a random quote:\n\n{quote}")
+    else:
+        joke = get_random_joke()
+        await bot.send_message(chat_id, f"Good evening! Here's a random joke:\n\n{joke}")
+
     await callback_query.answer()
-    await bot.send_message(chat_id, morning_quote)
 
 if __name__ == "__main__":
     from aiogram import executor
