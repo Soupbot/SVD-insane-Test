@@ -1,6 +1,7 @@
 from InsaneMusic import app 
 import asyncio
 import random
+from aiogram import Bot, Dispatcher, types
 from pyrogram import Client, filters
 from pyrogram.errors import UserNotParticipant
 from pyrogram.types import ChatPermissions
@@ -170,10 +171,22 @@ async def cancel_spam(client, message):
 
 # Assuming you have defined the client object and necessary setup for the Telegram bot
 
-TAGMES = ["hi", "hello", "good morning", "good evening", "good night", "yellarum yenna pandringa","vetiya iruntha vc ku vanga work la irrunthalum vanga😉"]
-EMOJI = ["😊", "👋", "🌞", "🌙","❤️", "💚", "💙", "💜", "🖤"]
+import random
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-async def tagme_handler(msg, mode):
+# Assuming you have defined the bot and dispatcher objects for the Telegram bot
+bot = Bot(token="YOUR_TELEGRAM_BOT_TOKEN")
+dp = Dispatcher(bot)
+
+spam_chats = []
+
+TAGMES = ["hi", "hello", "good morning", "good evening", "good night"]
+EMOJI = ["😊", "👋", "🌞", "🌙"]
+
+@dp.message_handler(commands=['tagme'])
+async def tagme_handler(msg: types.Message):
     chat_id = msg.chat.id
     if chat_id in spam_chats:
         await msg.reply("The tagme command is already running in this chat.")
@@ -183,7 +196,7 @@ async def tagme_handler(msg, mode):
     usrnum = 0
     usrtxt = ""
 
-    async for usr in client.iter_chat_members(chat_id):
+    async for usr in bot.iter_chat_members(chat_id):
         if not chat_id in spam_chats:
             break
 
@@ -194,17 +207,11 @@ async def tagme_handler(msg, mode):
         usrtxt += f"[{usr.user.first_name}](tg://user?id={usr.user.id}) "
 
         if usrnum == 1:
-            if mode == "text_on_cmd":
-                txt = f"{usrtxt} {random.choice(TAGMES)}"
-                markup = InlineKeyboardMarkup()
-                blast_button = InlineKeyboardButton("Blast!", callback_data="blast")
-                markup.insert(blast_button)
-                await client.send_message(chat_id, txt, reply_markup=markup)
-            elif mode == "text_on_reply":
-                markup = InlineKeyboardMarkup()
-                blast_button = InlineKeyboardButton("Blast!", callback_data="blast")
-                markup.insert(blast_button)
-                await msg.reply(f"{random.choice(EMOJI)} {usrtxt}", reply_markup=markup)
+            txt = f"{usrtxt} {random.choice(TAGMES)}"
+            markup = InlineKeyboardMarkup()
+            blast_button = InlineKeyboardButton("Blast!", callback_data="blast")
+            markup.insert(blast_button)
+            await msg.reply(txt, reply_markup=markup)
 
             # Generate a random sleep time between 10 and 30 seconds
             sleep_time = random.randint(10, 30)
@@ -218,10 +225,14 @@ async def tagme_handler(msg, mode):
     except:
         pass
 
-@bot.on_callback_query()
-async def on_callback_query(event):
-    if event.data == "blast":
-        morning_quote = "Good morning! Here's a beautiful quote to start your day:\n\n" \
-                        "Life is what happens when you're busy making other plans. - John Lennon"
-        await event.answer()
-        await event.message.edit_text(morning_quote)
+@dp.callback_query_handler(lambda c: c.data == 'blast')
+async def on_blast_button_click(callback_query: types.CallbackQuery):
+    chat_id = callback_query.message.chat.id
+    morning_quote = "Good morning! Here's a beautiful quote to start your day:\n\n" \
+                    "Life is what happens when you're busy making other plans. - John Lennon"
+    await callback_query.answer()
+    await bot.send_message(chat_id, morning_quote)
+
+if __name__ == "__main__":
+    from aiogram import executor
+    executor.start_polling(dp, skip_updates=True)
