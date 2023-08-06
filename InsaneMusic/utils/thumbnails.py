@@ -98,7 +98,7 @@ async def gen_thumb(videoid, user_id):
         enhancer = ImageEnhance.Brightness(image2)
         background = enhancer.enhance(1)
 
-        bg = Image.open(f"assets/SVDFINAL.png")
+        bg = Image.open(random.choice(YOUTUBE_IMG_URL))
         image3 = changeImageSize(950, 750, bg)
         image5 = image3.convert("RGBA")
         Image.alpha_composite(background, image5).save(f"cache/temp{videoid}.png")
