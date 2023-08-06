@@ -10,7 +10,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFo
 import PIL
 from youtubesearchpython.__future__ import VideosSearch
 
-from config import MUSIC_BOT_NAME
+from config import YOUTUBE_IMAGE_URL,M MUSIC_BOT_NAME
 from InsaneMusic import app
 YOUTUBE_IMG_URL = [
 
