@@ -28,7 +28,7 @@ def get_random_joke():
     data = response.json()
     return f"{data['setup']}\n{data['punchline']}"
 
-@dp.message_handler(commands=["tagme"])
+@dp.message_handler(commands=["/tagme"])
 async def tagme_handler(msg: types.Message):
     chat_id = msg.chat.id
     if chat_id in spam_chats:
