@@ -91,7 +91,7 @@ TAGMES = [ " **Hey inga va veh nee** ",
            " **ama nee yaru sollu ?🙃** ",
            ]
 
-@app.on_message(filters.command(["tagalls", "alll", "tagmembers"], prefixes=["/", "@", "#"]))
+@app.on_message(filters.command(["tagalls", "alls", "tagmembers"], prefixes=["/", "@", "!"]))
 async def mentionall(client, message):
     chat_id = message.chat.id
     if message.chat.type == "private":
@@ -109,7 +109,7 @@ async def mentionall(client, message):
         return await message.reply("**ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!**")
 
     if message.reply_to_message and message.text:
-        return await message.reply("/tagalls hello 🔫** ᴛʀʏ ᴛʜɪs ɴᴇxᴛ ᴛɪᴍᴇ ғᴏʀ ᴛᴀɢɢɪɴɢ...*")
+        return await message.reply("/tagme hello 🔫** ᴛʀʏ ᴛʜɪs ɴᴇxᴛ ᴛɪᴍᴇ ғᴏʀ ᴛᴀɢɢɪɴɢ...*")
     elif message.text:
         mode = "text_on_cmd"
         msg = message.text
@@ -117,9 +117,9 @@ async def mentionall(client, message):
         mode = "text_on_reply"
         msg = message.reply_to_message
         if not msg:
-            return await message.reply("/tagalls hii 🔫 **ᴛʀʏ ᴛʜɪs ᴏʀ ʀᴇᴘʟʏ ᴀɴʏ ᴍᴇssᴀɢᴇ...**")
+            return await message.reply("/tagme hii 🔫 **ᴛʀʏ ᴛʜɪs ᴏʀ ʀᴇᴘʟʏ ᴀɴʏ ᴍᴇssᴀɢᴇ...**")
     else:
-        return await message.reply("/tagalls hii 🔫 **ᴛʀʏ ᴛʜɪs ᴏʀ ʀᴇᴘʟʏ ᴀɴʏ ᴍᴇssᴀɢᴇ...**")
+        return await message.reply("/tagme hii 🔫 **ᴛʀʏ ᴛʜɪs ᴏʀ ʀᴇᴘʟʏ ᴀɴʏ ᴍᴇssᴀɢᴇ...**")
 
     spam_chats.append(chat_id)
     usrnum = 0
