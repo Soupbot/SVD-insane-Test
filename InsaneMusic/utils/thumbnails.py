@@ -12,6 +12,13 @@ from youtubesearchpython.__future__ import VideosSearch
 
 from config import YOUTUBE_IMG_URL, MUSIC_BOT_NAME
 from InsaneMusic import app
+YOUTUBE_IMG_URL = [
+
+    "https://telegra.ph/file/952af705ee8ceee735415.jpg",
+    "https://telegra.ph/file/9f3b78e7c34b39b2d7bb4.jpg",
+
+
+     ]
 
 
 def changeImageSize(maxWidth, maxHeight, image):
@@ -168,4 +175,4 @@ async def gen_thumb(videoid, user_id):
         return f"cache/{videoid}_{user_id}.png"
     except Exception as e:
         print(e)
-        return YOUTUBE_IMG_URL
+        return random.choice(YOUTUBE_IMG_URL)
