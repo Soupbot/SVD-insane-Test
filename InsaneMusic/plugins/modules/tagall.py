@@ -5,7 +5,7 @@ from pyrogram import Client, filters
 from pyrogram.errors import UserNotParticipant
 from pyrogram.types import ChatPermissions, Message
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from InsaneMusic.utils.inline.blast import blast_markup
+
 
 spam_chats = []
 
