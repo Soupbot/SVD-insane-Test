@@ -9,7 +9,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from InsaneMusic.plugins.modules.blast import open_me_markup
 
 # Assuming you have defined the bot and dispatcher objects for the Telegram bot
-bot = Bot(token="YOUR_BOT_TOKEN")
+bot = Bot(token="6348947600:AAG17P5yhPUhU89E_4o-mZRoaD7F8_XFkbk")
 dp = Dispatcher(bot)
 
 spam_chats = []
