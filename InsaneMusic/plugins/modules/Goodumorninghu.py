@@ -1,3 +1,4 @@
+from InsaneMusic import app
 import random
 import asyncio
 import requests
