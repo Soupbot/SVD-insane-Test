@@ -1,39 +1,45 @@
-from InsaneMusic import app 
-import asyncio
+from InsaneMusic import app
 import random
+import asyncio
+import requests
 from pyrogram import Client, filters
-from pyrogram.errors import UserNotParticipant
-from pyrogram.types import ChatPermissions, Message
+from pyrogram.types import Message 
+from bs4 import BeautifulSoup
+from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from InsaneMusic.utils.inline.blast import blast_markup
+from InsaneMusic.plugins.modules.blast import open_me_markup
 
+# Assuming you have defined the bot and dispatcher objects for the Telegram bot
+bot = Bot(token="6348947600:AAG17P5yhPUhU89E_4o-mZRoaD7F8_XFkbk")
+dp = Dispatcher(bot)
 
 spam_chats = []
 
-TAGMES = ["hi", "hello", "good morning", "good evening", "good night", "yellarum yenna pandringa","vetiya iruntha vc ku vanga work la irrunthalum vanga😉"]
-EMOJI = ["😊", "👋", "🌞", "🌙","❤️", "💚", "💙", "💜", "🖤"]
+TAGMES = ["hi", "hello", "good morning", "good evening", "good night"]
+EMOJI = ["😊", "👋", "🌞", "🌙"]
 
+def get_random_quote():
+    url = "https://quotes.toscrape.com/random"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    quote = soup.find("span", class_="text").text.strip()
+    #author = soup.find("span", class_="author").text.strip()
+    #return f"{quote}\n- {author}"
+    return f"{quote}"
 
-@app.on_message(filters.command(["tagus"], prefixes=["/", "@", "!"]))
+def get_random_joke():
+    url = "https://official-joke-api.appspot.com/random_joke"
+    response = requests.get(url)
+    data = response.json()
+    return f"{data['setup']}\n{data['punchline']}"
+
+@app.on_message(filters.command(["tagus"], prefixes=["/", "#", "@"]))
 async def tagme_handler(client, message: Message):
     chat_id = message.chat.id
     if chat_id in spam_chats:
         await message.reply("The tagme command is already running in this chat.")
         return
 
-    if message.reply_to_message and message.text:
-        return await message.reply("/tagus ** ᴛʀʏ ᴛʜɪs ɴᴇxᴛ ᴛɪᴍᴇ ғᴏʀ ᴛᴀɢɢɪɴɢ...*")
-    elif message.text:
-        mode = "text_on_cmd"
-        msg = message.text
-    elif message.reply_to_message:
-        mode = "text_on_reply"
-        msg = message.reply_to_message
-        if not msg:
-            return await message.reply("/tagus **ᴛʀʏ ᴛʜɪs ᴏʀ ʀᴇᴘʟʏ ᴀɴʏ ᴍᴇssᴀɢᴇ...**")
-    else:
-        return await message.reply("/tagus **ᴛʀʏ ᴛʜɪs ᴏʀ ʀᴇᴘʟʏ ᴀɴʏ ᴍᴇssᴀɢᴇ...**")
-              
     spam_chats.append(chat_id)
     usrnum = 0
     usrtxt = ""
@@ -46,26 +52,16 @@ async def tagme_handler(client, message: Message):
             continue
 
         usrnum += 1
-        #usrtxt += f"[{usr.user.first_name}](tg://user?id={usr.user.id}) "
+        #usrtxt += f"[{usr.user.first_name}](tg://user?id={usr.user.id})"
         usrtxt += f"{usr.user.mention}"
 
         if usrnum == 1:
-            if mode == "text_on_cmd":
-                txt = f"{usrtxt} {random.choice(TAGMES)}"
-                markup = blast_markup()                    
-                await message.reply_text(
-                          txt, 
-                          reply_markup=markup
-                )
-            elif mode == "text_on_reply":
-                markup = InlineKeyboardMarkup(
-                       [
-                              [InlineKeyboardButton(text="Blast!",callback_data="blast")]
-                       ]
-                )
-                await msg.reply(f"{random.choice(EMOJI)} {usrtxt}", reply_markup=markup)
-
-            # Generate a random sleep time between 10 and 30 seconds(0 and 5 seconds)
+            markup = open_me_markup()            
+            await message.reply_text(
+                f"{usrtxt} {random.choice(TAGMES)}", 
+                reply_markup=markup
+            )
+            # Generate a random sleep time between 10 and 30 seconds
             sleep_time = random.randint(0, 5)
             await asyncio.sleep(sleep_time)
 
@@ -78,10 +74,17 @@ async def tagme_handler(client, message: Message):
         pass
 
 @app.on_callback_query()
-async def on_callback_query(client, event):
-    print("Callback query received:", event.data)
-    if event.data == "blast":
-              print("Blast button clicked!")
-              morning_quote = f"Good morning {event.from_user.mention}! Here's a beautiful quote to start your day:\n\n""Life is what happens when you're busy making other plans. - John Lennon"                             
-              await event.answer()
-              await event.message.edit_text(morning_quote)
+async def on_open_me_button_click(client, callback_query):
+    print("Callback query received:", callback_query.data)
+    chat_id = callback_query.message.chat.id
+    time_of_day = "evening" if "good evening" in callback_query.message.text.lower() else "morning"
+    if time_of_day == "morning":
+        print("Morning button clicked!")
+        quote = get_random_quote()
+        await client.send_message(chat_id, f"Good morning! Here's a random quote:\n\n{quote}")
+    else:
+        print("Evening button clicked!")
+        joke = get_random_joke()
+        await client.send_message(chat_id, f"Good evening! Here's a random joke:\n\n{joke}")
+
+    await callback_query.answer()
