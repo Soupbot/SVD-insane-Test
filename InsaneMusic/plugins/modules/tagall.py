@@ -1,4 +1,4 @@
-from InsaneMuisc import app 
+from InsaneMusic import app 
 import asyncio
 import random
 from pyrogram import Client, filters
