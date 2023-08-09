@@ -1,6 +1,6 @@
 import datetime
 import pytz
-from YukkiMusic import app
+from InsaneMusic import app
 import random
 import asyncio
 import requests
@@ -9,7 +9,7 @@ from pyrogram.types import Message, CallbackQuery
 from bs4 import BeautifulSoup
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from YukkiMusic.plugins.modules.blast import open_me_markup, surprise_markup, click_me_markup, close_me_markup
+from InsaneMusic.plugins.modules.blast import open_me_markup, surprise_markup, click_me_markup, close_me_markup
 from typing import Union
 
 spam_chats = []
@@ -18,21 +18,23 @@ TAGMES = ["good morning", "good evening", "good night", "good afternoon"]
 EMOJI = ["😊", "👋", "🌞", "🌙"]
 
 COMMENTS = [
+"Matniee show vanakangal 🫡 ",
 "saptiya nee - 1",
 "yenna soru thina - 2",
 "yennaku kodukama sapudura nee lam nalla irrupa - 3",
 "sari nalla toongitu work parru  - 20",
-"dei last bench kara toongatha da 😮‍💨 - 4 ",
-"nalla saptu saptu toonguran pare 😬 - 5 ",
+"dei last bench kara toongatha da 😮‍💨 - 4",
+"nalla saptu saptu toonguran pare 😬 - 5",
 "ipo nee yelunthukula nu vei 🫣 - 8",
-"Yun left side la parru un crush irrukanga - 9 ",
-"sari toongu kanavula un crush varum 😝😅 - 10 ",
-"nalla sapta pola inga varikum kekuthu yaepom 🙈😃 - 6 ",
+"Yun left side la parru un crush irrukanga - 9",
+"sari toongu kanavula un crush varum 😝😅 - 10",
+"nalla sapta pola inga varikum kekuthu yaepom 🙈😃 - 6",
 "dei nalavaneee yelunthudu da - 7" ,
-"sari sari toongunathu pothum velaiya parru - 11 ",
+"sari sari toongunathu pothum velaiya parru - 11",
 "innoruka polam variya sorru thinga - 12" ,
-"sari oru tips solluren - toongama irruka - 13 ",
-"pakathula work la un crush irruntha.. manager ku theriyama sight adey 🤧",
+"sari oru tips solluren - toongama irruka - 13",
+"pakathula work la un crush irruntha.. manager ku theriyama sight adey 🤧 -14",
+"padika bore adikutha veliya trees ha parru puthu-narchi kidaikum 🍀 -15",
 "sari sari parthathu pothum ipo parru nalla mandaila yerum 🫥 - 16",
 "ninachen , yenna da kannu vera yengaiyo poguthu nu  😂 - 17",
 "sari work pandra pasanga luku - meeting nu yulla poidunga 😃 - 18",
@@ -97,7 +99,7 @@ async def tagme_handler(client, message: Message):
     
     chat_id = message.chat.id
     if chat_id in spam_chats:
-        await message.reply("The tagme command is already running in this chat.")
+        await message.reply("tagu oditu irruku parungaaa.")
         return
 
     spam_chats.append(chat_id)
@@ -142,9 +144,16 @@ async def on_open_me_button_click(client, etho: Union[types.Message, types.Callb
     if user_name in etho.message.text:
         if "good morning" in etho.message.text.lower():
             print("Morning button clicked!")
-            await etho.edit_message_text(text="Getting your joke...")
+            await etho.edit_message_text(text="Request on progress     .")
             await asyncio.sleep(2)
-            joke = get_random_joke()            
+            await etho.edit_message_text(text="Request on progress    .")
+            await asyncio.sleep(2)
+            await etho.edit_message_text(text="Request on progress   .")
+            await asyncio.sleep(2)
+            await etho.edit_message_text(text="Request on progress  .")
+            await asyncio.sleep(2)
+            await etho.edit_message_text(text="Request on progress.")
+            await asyncio.sleep(2)
             await etho.edit_message_text(text=f"Good morning {etho.from_user.mention}! Here's a random joke:\n\n{joke}")
 
         else:
